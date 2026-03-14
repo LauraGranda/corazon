@@ -161,3 +161,70 @@ def large_dataframe() -> pd.DataFrame:
             "disease": [i % 2 for i in range(100)],
         }
     )
+
+
+@pytest.fixture
+def messy_dataframe() -> pd.DataFrame:
+    """Return a DataFrame with data quality issues for testing cleaning functions."""
+    return pd.DataFrame(
+        {
+            "age": ["63", "abc", "45", "  58  ", "?", "50"],
+            "sex": ["Male", "2345", "  Female  ", "Female", "Male", "NA"],
+            "chest_pain": [
+                "typical",
+                "nontypical  ",
+                "  asymptomatic",
+                "garbage_val",
+                "nonanginal",
+                "?",
+            ],
+            "rest_bp": ["145", "160", "not_a_number", "130", "", "120"],
+            "chol": ["233", "286", "250", "204", "null", "236"],
+            "fbs": [1.0, 0.0, float("nan"), 0.0, 1.0, 0.0],
+            "rest_ecg": [
+                "normal",
+                "left ventricular hypertrophy ",
+                "5678",
+                "normal",
+                "ST-T wave abnormality",
+                "",
+            ],
+            "max_hr": ["150", "108", "187", "xyz", "172", "178"],
+            "exang": ["0", "1", "f", "0", "adfs", "1"],
+            "old_peak": ["2.3", "1.5", "not_float", "1.4", "0.8", "None"],
+            "slope": ["3", "afd", "2", "1", "3", "NULL"],
+            "ca": ["0.0", "3.0", "bad", "0.0", "1.0", "?"],
+            "thal": [
+                "fixed",
+                "87654",
+                "  reversable  ",
+                "normal",
+                "reversable",
+                "null",
+            ],
+            "disease": ["0", "1", "fsg", "0", "?", "1"],
+        }
+    )
+
+
+@pytest.fixture
+def pre_cast_dataframe() -> pd.DataFrame:
+    """Return a DataFrame in pre-cast state (after standardize -> clean -> validate)."""
+    return pd.DataFrame(
+        {
+            "age": [63.0, float("nan"), 45.0, 58.0],
+            "sex": ["Male", None, "Female", "Female"],
+            "chest_pain": ["typical", "nontypical", "asymptomatic", "nonanginal"],
+            "rest_bp": [145.0, 160.0, float("nan"), 130.0],
+            "chol": [233.0, 286.0, 250.0, float("nan")],
+            "fbs": [1.0, 0.0, float("nan"), 0.0],
+            "rest_ecg": ["normal", "left ventricular hypertrophy", None, "normal"],
+            "max_hr": [150.0, 108.0, 187.0, float("nan")],
+            "exang": ["0", "1", None, "0"],
+            "old_peak": [2.3, 1.5, float("nan"), 1.4],
+            "slope": ["3", "2", "3", None],
+            "ca": ["0.0", "3.0", None, "0.0"],
+            "thal": ["fixed", "normal", None, "normal"],
+            "disease": ["0", "1", None, "0"],
+        }
+    )
