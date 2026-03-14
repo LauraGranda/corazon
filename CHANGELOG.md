@@ -4,6 +4,38 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 
 ## [Unreleased]
 
+### Added
+
+- Módulo de limpieza y validación de datos (`src/data/clean_data.py`):
+    - 6 funciones de limpieza reutilizables: `standardize_nulls()`, `clean_strings()`, `invalidate_categorical()`, `invalidate_numeric()`, `validate_dataframe()`, `cast_types()`
+    - 8 constantes de esquema (VALID_*) basadas en `datos_corazon_Info.txt`
+    - Soporte para nullable Int64, boolean, y tipos categoriales ordenados/desordenados
+    - Type hints completos y docstrings en estilo Google
+
+- Suite completa de tests para limpieza de datos (`tests/data/test_clean_data.py`):
+    - 51 pruebas pytest organizadas en 5 clases (TestStandardizeNulls, TestCleanStrings, TestInvalidateCategorical, TestInvalidateNumeric, TestValidateDataframe, TestCastTypes)
+    - Cobertura integral: estandarización de nulls, limpieza de strings, validación de categorías/numéricos, casting de tipos
+    - Pruebas de inmutabilidad, NaN preservation, y casting a tipos nullable
+
+- Nuevas fixtures pytest en `tests/data/conftest.py`:
+    - `messy_dataframe`: DataFrame con 6 filas con problemas de calidad (nulls irregulares, espacios, valores basura)
+    - `pre_cast_dataframe`: DataFrame en estado pre-cast para tests de type casting
+
+### Changed
+
+- Refactorización del pipeline de limpieza de datos:
+    - Extracción de funciones del notebook `notebooks/2-exploration/01_LMG_explore.ipynb` a módulo reutilizable `src/data/clean_data.py`
+    - Aplicación del Single Responsibility Principle: funciones pequeñas y decoupled
+    - Mejora de mantenibilidad y testabilidad del código de limpieza
+
+### Fixed
+
+- Resolución de 10 violaciones de ruff linter:
+    - Reemplazo de comparaciones directas con True/False por aserciones Pythónicas (`assert result` en lugar de `assert result == True`)
+    - Eliminación de valores mágicos en tests (PLR2004): uso de constantes nombradas (AGE_TEST_VALUE, REST_BP_TEST_VALUE, etc.)
+    - Formateo correcto de archivos según ruff formatter
+    - Importaciones innecesarias removidas
+
 ## [1.1.0] - 2026-03-13
 
 ### Added
@@ -31,6 +63,7 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
     - Reemplazo de magic numbers (5, 14, 63, 100) con constantes nombradas
     - Corrección de rutas inseguras de archivos temporales usando pytest fixtures
     - Eliminación de variable no utilizada en tests de sobrescritura
+
 ## [1.1.0] - 2026-02-22
 
 ### Added
