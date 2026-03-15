@@ -84,5 +84,7 @@ def create_preprocessor() -> ColumnTransformer:
             ("num", _build_numeric_pipeline(), NUMERIC_FEATURES),
             ("cat", _build_categorical_pipeline(), CATEGORICAL_FEATURES),
             ("ord", _build_ordinal_pipeline(), ORDINAL_FEATURES),
-        ]
+        ],
+        remainder="drop",
+        verbose_feature_names_out=False,
     )

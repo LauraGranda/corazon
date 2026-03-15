@@ -27,6 +27,7 @@ dev = [
     "pytest-cov>=7.0.0",
     "cruft[pyproject]>=2.16.0",# Automated Cookiecutter template synchronization
     "matplotlib>=3.10.8",
+    "ipykernel>=7.2.0",
 ]
 
 #
