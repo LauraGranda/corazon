@@ -3,13 +3,14 @@ name = "corazon"
 version = "0.1.0"
 description = "primer proyecto CDP"
 authors = [
-    "Laura Granda <laura.granda@upb.edu.co>",
+    {name = "Laura Granda", email = "laura.granda@upb.edu.co"},
 ]
 requires-python = ">=3.12"
 readme = "README.md"
 
 dependencies = [
     "pandas[parquet]==2.3.3",
+    "scikit-learn>=1.5.0",
     "seaborn>=0.13.2",
 ]
 

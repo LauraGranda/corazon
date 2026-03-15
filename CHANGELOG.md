@@ -6,37 +6,79 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 
 ### Added
 
-- Módulo de limpieza y validación de datos (`src/data/clean_data.py`):
-    - 6 funciones de limpieza reutilizables: `standardize_nulls()`, `clean_strings()`, `invalidate_categorical()`, `invalidate_numeric()`, `validate_dataframe()`, `cast_types()`
-    - 8 constantes de esquema (VALID_*) basadas en `datos_corazon_Info.txt`
-    - Soporte para nullable Int64, boolean, y tipos categoriales ordenados/desordenados
+- Módulo de feature engineering pipeline (`src/pipelines/feature_pipeline/build_features.py`):
+    - Función principal `create_preprocessor() -> ColumnTransformer` que retorna un preprocessor unfitted
+    - 3 funciones privadas para construcción de sub-pipelines especializados:
+        - `_build_numeric_pipeline()`: SimpleImputer(median) para age, max_hr, old_peak
+        - `_build_categorical_pipeline()`: SimpleImputer(most_frequent) + OneHotEncoder para chest_pain, sex
+        - `_build_ordinal_pipeline()`: SimpleImputer(most_frequent) + OrdinalEncoder para thal, slope, ca, exang
+    - Constantes de feature groups (NUMERIC_FEATURES, CATEGORICAL_FEATURES, ORDINAL_FEATURES)
     - Type hints completos y docstrings en estilo Google
 
-- Suite completa de tests para limpieza de datos (`tests/data/test_clean_data.py`):
-    - 51 pruebas pytest organizadas en 5 clases (TestStandardizeNulls, TestCleanStrings, TestInvalidateCategorical, TestInvalidateNumeric, TestValidateDataframe, TestCastTypes)
-    - Cobertura integral: estandarización de nulls, limpieza de strings, validación de categorías/numéricos, casting de tipos
-    - Pruebas de inmutabilidad, NaN preservation, y casting a tipos nullable
+- Suite completa de tests para feature engineering pipeline (`tests/pipelines/feature_pipeline/`):
+    - 5 pruebas pytest en clase TestCreatePreprocessor
+    - Fixture `dummy_df` en `conftest.py` con datos mínimos para pruebas
+    - Cobertura de: instancia correcta, número de transformers, nombres de transformers, fit/transform sin excepciones, forma de output correcta
+    - Constantes de test (EXPECTED_NUM_TRANSFORMERS, EXPECTED_TRANSFORMER_NAMES, EXPECTED_NUM_FEATURES) para evitar magic numbers
 
-- Nuevas fixtures pytest en `tests/data/conftest.py`:
-    - `messy_dataframe`: DataFrame con 6 filas con problemas de calidad (nulls irregulares, espacios, valores basura)
-    - `pre_cast_dataframe`: DataFrame en estado pre-cast para tests de type casting
+- Notebook prototipo de feature engineering (`notebooks/4-feat_eng/01-feature_engineering_pipeline.ipynb`):
+    - Pipeline completo de: carga → selección → limpieza → análisis → split → fit/transform
+    - Documentación de EDA a producción workflow
+    - 15 características ingenieriles generadas (3 numéricas + 2 one-hot categóricas + 2 one-hot sexo + 4 ordinales)
 
 ### Changed
 
-- Refactorización del pipeline de limpieza de datos:
-    - Extracción de funciones del notebook `notebooks/2-exploration/01_LMG_explore.ipynb` a módulo reutilizable `src/data/clean_data.py`
-    - Aplicación del Single Responsibility Principle: funciones pequeñas y decoupled
-    - Mejora de mantenibilidad y testabilidad del código de limpieza
+- Refactorización del pipeline de feature engineering:
+    - Extracción de lógica del notebook a módulos reutilizables en `src/pipelines/feature_pipeline/`
+    - Aplicación del Single Responsibility Principle: funciones puras con inputs/outputs claros
+    - Mejora de testabilidad y reutilización del código en múltiples contextos
+    - Estructura modular compatible con FTI pipeline pattern (Feature/Training/Inference)
+
+- Actualización de dependencias del proyecto:
+    - Agregación de scikit-learn >=1.5.0 como dependencia principal
+    - Optimización de `uv.lock` (removidas dependencias innecesarias de jupyter)
+    - Actualización de configuración pre-commit para trabajar correctamente con uv
 
 ### Fixed
 
-- Resolución de 10 violaciones de ruff linter:
-    - Reemplazo de comparaciones directas con True/False por aserciones Pythónicas (`assert result` en lugar de `assert result == True`)
-    - Eliminación de valores mágicos en tests (PLR2004): uso de constantes nombradas (AGE_TEST_VALUE, REST_BP_TEST_VALUE, etc.)
-    - Formateo correcto de archivos según ruff formatter
-    - Importaciones innecesarias removidas
+- Resolución de violaciones de ruff linter en feature pipeline:
+    - Eliminación de valores mágicos (3, números en aserciones) reemplazados con constantes nombradas
+    - Formateo correcto de código según ruff formatter (line length 100, double quotes)
+    - Renombramiento de directorio de tests de `feature-pipeline` a `feature_pipeline` para compatibilidad mypy
 
-## [1.1.0] - 2026-03-13
+- Corrección de errores en `pyproject.toml`:
+    - Formateo correcto de sección `authors` usando diccionarios en lugar de strings
+    - Actualización de configuración pre-commit para usar dependencias gestionadas por uv
+
+## [1.3.0] - 2026-03-14
+
+### Added
+
+- Módulo de limpieza y validación de datos (`src/data/clean_data.py`):
+    - Funciones para limpieza y validación de datos cardíacos
+    - Refactorización de lógica del notebook de exploración a módulo reutilizable
+    - Manejo avanzado de anomalías y valores no estándar
+
+- Suite de tests unitarios para data cleaning (`tests/data/test_clean_data.py`):
+    - Tests exhaustivos para funciones de limpieza y validación
+
+- Módulos de análisis de datos (`src/analysis/`):
+    - Análisis univariado de variables
+    - Análisis bivariable de relaciones entre variables
+    - Análisis multivariado para patrones complejos
+
+### Changed
+
+- Refactorización del notebook de exploración:
+    - Extracción de lógica de limpieza a módulo reutilizable
+    - Aplicación del Single Responsibility Principle
+    - Mejora de testabilidad del código de análisis
+
+### Fixed
+
+- Resolución de violaciones de ruff linter en módulos de análisis y limpieza
+
+## [1.2.0] - 2026-03-13
 
 ### Added
 
