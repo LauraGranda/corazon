@@ -4,6 +4,20 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-03-15
+
+### Added
+
+- Aplicación Streamlit para inferencia clínica (`notebooks/7-deploy/app.py`):
+    - Interfaz web para predicción individual de riesgo de enfermedad cardíaca
+    - Funcionalidad de predicción por lotes con carga de CSV
+    - Dos tabs: "Individual Prediction" (entrada manual) y "Batch Prediction" (carga masiva)
+    - Mapeo automático de valores clínicos a formato esperado por el modelo
+    - Descarga de resultados predichos en CSV
+    - Presentación de resultados con probabilidades y clasificación (Healthy/At Risk)
+    - Validación de columnas requeridas en datos de entrada
+    - Manejo robusto de valores faltantes (NaN) en datos de entrada
+
 ## [1.6.0] - 2026-03-15
 
 ### Added
