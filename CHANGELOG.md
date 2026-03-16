@@ -4,6 +4,39 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-03-15
+
+### Added
+
+- Módulo de training pipeline (`src/pipelines/training_pipeline/train_pipeline.py`):
+    - Script de producción para entrenar modelo LogisticRegression con GridSearchCV
+    - Feature engineering integrado con `create_preprocessor()` del feature pipeline
+    - Hyperparameter tuning con cv=5 en parámetros `penalty` (l1, l2) y `C` (0.1, 0.5, 1.0, 5.0)
+    - Validación de modelo contra baseline score de 0.70 usando recall metric
+    - Serialización de modelo con joblib protocol=5
+    - Type hints completos y docstrings
+
+- Suite completa de tests para training pipeline (`tests/pipelines/training_pipeline/test_simple_train_pipeline.py`):
+    - Tests para validar existencia del script de pipeline
+    - Tests para validar generación del archivo joblib del modelo
+
+- Notebooks de selección y evaluación de modelos (`notebooks/5-models/`):
+    - **01-baseline_model.ipynb**: Baseline con LogisticRegression, cross-validation, learning curves y evaluación
+    - **01-model_selection.ipynb**: Comparación de 5 modelos (LogisticRegression, RandomForest, SVC, GradientBoosting, KNeighborsClassifier)
+    - **01-first_model_logistic_regression.ipynb**: GridSearchCV tuning, MLflow experiment tracking y model serialization
+
+- Notebook de interpretación del modelo (`notebooks/6-interpretation/01-model_interpretation.ipynb`):
+    - Feature importance basada en coeficientes absolutos
+    - Permutation importance en test set usando recall metric
+    - Análisis clínico detallado de hallazgos del modelo
+
+- Integración MLflow para experiment tracking:
+    - Configuración de tracking URI en `mlruns/`
+    - Logging de modelos con signature inference
+    - Logging de métricas y hiperparámetros
+
+## [1.5.0] - 2026-03-15
+
 ### Added
 
 - Módulo de feature engineering pipeline (`src/pipelines/feature_pipeline/build_features.py`):
