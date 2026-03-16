@@ -81,6 +81,9 @@ target/
 .pytest_cache/
 .ruff_cache/
 
+# MLflow tracking
+mlruns/
+
 # Hydra logs
 outputs
 

@@ -1,0 +1,38 @@
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.3
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+is_signature_from_type_hint: false
+mlflow_version: 3.10.1
+model_id: null
+model_size_bytes: 5299
+model_uuid: bcbc1e4275aa48a3bffe79132bfebf6a
+prompts: null
+saved_input_example_info:
+  artifact_path: input_example.json
+  pandas_orient: split
+  serving_input_path: serving_input_example.json
+  type: dataframe
+signature:
+  inputs: '[{"type": "long", "name": "age", "required": false}, {"type": "long", "name":
+    "max_hr", "required": false}, {"type": "double", "name": "old_peak", "required":
+    false}, {"type": "string", "name": "chest_pain", "required": true}, {"type": "string",
+    "name": "sex", "required": true}, {"type": "string", "name": "thal", "required":
+    true}, {"type": "string", "name": "slope", "required": true}, {"type": "string",
+    "name": "ca", "required": true}, {"type": "string", "name": "exang", "required":
+    true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "float64", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-03-16 01:56:27.622408'
