@@ -1,11 +1,16 @@
 # HOW TO RUN THE APP: streamlit run notebooks/7-deploy/app.py
 
-import os
+import sys
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
-from joblib import load
 from sklearn.pipeline import Pipeline
+
+sys.path.append(str(Path.cwd().resolve()))
+
+from src.inference.predict import load_model as backend_load_model
+from src.inference.predict import make_predictions
 
 REQUIRED_COLUMNS: list[str] = [
     "age",
@@ -141,11 +146,10 @@ def preprocess_batch_data(df: pd.DataFrame) -> pd.DataFrame:
 
 
 @st.cache_resource
-def load_model(model_file_path: str) -> Pipeline:
-    """Load the trained LogisticRegression pipeline."""
+def load_model_cached(model_dir: Path, model_name: str) -> Pipeline:
+    """Load the trained LogisticRegression pipeline using backend inference."""
     with st.spinner("Loading model..."):
-        model = load(model_file_path)
-    return model
+        return backend_load_model(model_dir=model_dir, model_name=model_name)
 
 
 def individual_prediction_tab(model: Pipeline) -> None:
@@ -155,7 +159,8 @@ def individual_prediction_tab(model: Pipeline) -> None:
     df_user_data = get_user_data()
 
     if st.button("Predict Disease Risk"):
-        state = model.predict(df_user_data)[0]
+        predictions = make_predictions(model, df_user_data)
+        state = predictions[0]
 
         st.title("Diagnosis Prediction")
 
@@ -193,7 +198,7 @@ def batch_prediction_tab(model: Pipeline) -> None:
         else:
             if st.button("Predict Disease Risk for All Patients"):
                 df_processed = preprocess_batch_data(df_batch)
-                predictions = model.predict(df_processed)
+                predictions = make_predictions(model, df_processed)
 
                 df_results = df_batch.copy()
                 df_results["Predicted_Disease"] = predictions
@@ -225,10 +230,6 @@ def batch_prediction_tab(model: Pipeline) -> None:
 
 def main() -> None:
     """Main application logic."""
-    model_name = "simple_logistic_regression.joblib"
-    this_file_path = os.path.abspath(__file__)
-    project_path = "/".join(this_file_path.split("/")[:-3])
-
     st.set_page_config(
         page_title="Heart Disease Clinical Assistant",
         page_icon="🫀",
@@ -237,8 +238,11 @@ def main() -> None:
 
     st.header("Heart Disease Clinical Assistant 🫀")
 
-    model_file_path = f"{project_path}/models/{model_name}"
-    model = load_model(model_file_path=model_file_path)
+    models_path = Path.cwd().resolve() / "models"
+    model = load_model_cached(
+        model_dir=models_path,
+        model_name="simple_logistic_regression.joblib",
+    )
 
     tab1, tab2 = st.tabs(["Individual Prediction", "Batch Prediction"])
 
