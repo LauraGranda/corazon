@@ -4,6 +4,64 @@ Todos los cambios notables en este proyecto serán documentados en este archivo.
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-03-16
+
+### Added
+
+- Módulo de inferencia desacoplado (`src/inference/predict.py`):
+    - Función `load_model(model_dir, model_name)` para cargar pipelines entrenados desde disco
+    - Función `make_predictions(model, input_data)` para hacer predicciones de clase (0 o 1)
+    - Función `make_prediction_probabilities(model, input_data)` para obtener probabilidades de la clase positiva
+    - Type hints completos, docstrings y manejo de excepciones
+    - Serialización con joblib usando protocol=5
+
+- Suite completa de tests para inferencia (`tests/inference/test_predict.py`):
+    - 4 pruebas pytest: éxito en carga, manejo de archivo no encontrado, predicciones y probabilidades
+    - Fixtures para crear modelos mock y guardar en rutas temporales
+    - Cobertura integral de casos edge (archivos faltantes, datos inválidos)
+
+- Pipeline de inferencia por lotes (`src/pipelines/inference_pipeline/inference_pipeline.py`):
+    - Función `run_batch_inference()` que orquesta: carga de datos → predicciones → guardado de resultados
+    - Soporte para archivos `.parquet` y `.csv`
+    - Limpieza automática de filas con valores NaN
+    - Logging detallado en cada etapa del pipeline
+    - Creación automática de directorios de salida
+
+- Suite de tests para batch inference pipeline (`tests/pipelines/inference_pipeline/test_inference_pipeline.py`):
+    - Tests con mocks para aislamiento de dependencias
+    - Validación de generación de archivos y contenido de predicciones
+    - Cobertura de casos de uso completos end-to-end
+
+- Refactorización de aplicación Streamlit (`notebooks/7-deploy/app.py`):
+    - Desacoplamiento completo: UI ahora usa módulo backend `src.inference.predict`
+    - Eliminación de dependencia directa en joblib y sklearn.pipeline.Pipeline imports
+    - Nueva función `load_model_cached()` que envuelve `backend_load_model` con caching de Streamlit
+    - Actualización de `individual_prediction_tab()` y `batch_prediction_tab()` para usar `make_predictions()`
+    - Path resolution dinámico usando `pathlib.Path` para mayor portabilidad
+    - Mejora de arquitectura con separación clara de responsabilidades (UI vs Lógica de negocio)
+
+### Changed
+
+- Refactorización arquitectónica completa del pipeline de predicción:
+    - Separación de lógica de inferencia (backend) de presentación (frontend Streamlit)
+    - Aplicación del patrón FTI (Feature/Training/Inference) pipeline
+    - Mejora de reusabilidad: módulo `src.inference` puede ser importado por cualquier consumidor (notebooks, scripts, apps web)
+    - Mejora de testabilidad: funciones puras con mocking simplificado
+
+## [1.7.0] - 2026-03-15
+
+### Added
+
+- Aplicación Streamlit para inferencia clínica (`notebooks/7-deploy/app.py`):
+    - Interfaz web para predicción individual de riesgo de enfermedad cardíaca
+    - Funcionalidad de predicción por lotes con carga de CSV
+    - Dos tabs: "Individual Prediction" (entrada manual) y "Batch Prediction" (carga masiva)
+    - Mapeo automático de valores clínicos a formato esperado por el modelo
+    - Descarga de resultados predichos en CSV
+    - Presentación de resultados con probabilidades y clasificación (Healthy/At Risk)
+    - Validación de columnas requeridas en datos de entrada
+    - Manejo robusto de valores faltantes (NaN) en datos de entrada
+
 ## [1.6.0] - 2026-03-15
 
 ### Added
